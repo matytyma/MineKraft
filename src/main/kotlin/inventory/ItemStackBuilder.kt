@@ -145,27 +145,35 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             override fun iterator(): MutableIterator<ItemFlag> = stack.itemFlags.iterator()
 
             override fun retainAll(elements: Collection<ItemFlag>): Boolean {
-                TODO("Not yet implemented")
+                val flags = stack.itemFlags.toMutableSet()
+                val result = flags.retainAll(elements.toSet())
+                stack.removeItemFlags(*stack.itemFlags.toTypedArray())
+                stack.addItemFlags(*flags.toTypedArray())
+                return result
             }
 
             override fun removeAll(elements: Collection<ItemFlag>): Boolean {
-                TODO("Not yet implemented")
+                val flags = stack.itemFlags.toMutableSet()
+                val result = flags.removeAll(elements.toSet())
+                stack.removeItemFlags(*stack.itemFlags.toTypedArray())
+                stack.addItemFlags(*flags.toTypedArray())
+                return result
             }
 
             override fun remove(element: ItemFlag): Boolean {
-                TODO("Not yet implemented")
+                val result = stack.hasItemFlag(element)
+                stack.removeItemFlags(element)
+                return result
             }
 
-            override fun containsAll(elements: Collection<ItemFlag>): Boolean {
-                TODO("Not yet implemented")
-            }
+            override fun containsAll(elements: Collection<ItemFlag>): Boolean = stack.itemFlags.containsAll(elements)
 
-            override fun contains(element: ItemFlag): Boolean {
-                TODO("Not yet implemented")
-            }
+            override fun contains(element: ItemFlag): Boolean = stack.itemFlags.contains(element)
 
             override fun addAll(elements: Collection<ItemFlag>): Boolean {
-                TODO("Not yet implemented")
+                val previous = stack.itemFlags
+                stack.addItemFlags(*elements.toTypedArray())
+                return previous != stack.itemFlags
             }
             // endregion
         }
