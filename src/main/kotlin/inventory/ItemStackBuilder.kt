@@ -1,5 +1,7 @@
 package dev.matytyma.minekraft.inventory
 
+import dev.matytyma.minekraft.enchantments.Enchantments
+import dev.matytyma.minekraft.enchantments.UnsafeEnchantments
 import io.papermc.paper.persistence.PersistentDataContainerView
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
@@ -22,39 +24,18 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
     val maxStackSize: Int
         get() = stack.maxStackSize
 
-    val enchantments: MutableMap<Enchantment, Int>
-        get() = object : MutableMap<Enchantment, Int> {
-            override val entries: MutableSet<MutableMap.MutableEntry<Enchantment, Int>>
-                get() = stack.enchantments.entries
+    var enchantments: MutableMap<Enchantment, Int>
+        get() = Enchantments(stack)
+        set(value) {
+            enchantments.clear()
+            enchantments.putAll(value)
+        }
 
-            override val keys: MutableSet<Enchantment>
-                get() = stack.enchantments.keys
-
-            override val size: Int
-                get() = stack.enchantments.size
-
-            override val values: MutableCollection<Int>
-                get() = stack.enchantments.values
-
-            override fun clear() = stack.removeEnchantments()
-
-            override fun isEmpty(): Boolean = stack.enchantments.isEmpty()
-
-            override fun remove(key: Enchantment): Int = stack.removeEnchantment(key)
-
-            override fun putAll(from: Map<out Enchantment, Int>) =
-                stack.addEnchantments(from.mapKeys { it as Enchantment })
-
-            override fun put(key: Enchantment, value: Int): Int? {
-                stack.addEnchantment(key, value)
-                return null
-            }
-
-            override fun get(key: Enchantment): Int = stack.getEnchantmentLevel(key)
-
-            override fun containsValue(value: Int): Boolean = throw UnsupportedOperationException("")
-
-            override fun containsKey(key: Enchantment): Boolean = stack.containsEnchantment(key)
+    var unsafeEnchantments: MutableMap<Enchantment, Int>
+        get() = UnsafeEnchantments(stack)
+        set(value) {
+            unsafeEnchantments.clear()
+            unsafeEnchantments.putAll(value)
         }
 }
 
