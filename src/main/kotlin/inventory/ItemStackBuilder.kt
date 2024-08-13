@@ -1,11 +1,12 @@
 package dev.matytyma.minekraft.inventory
 
-import dev.matytyma.minekraft.enchantments.Enchantments
-import dev.matytyma.minekraft.enchantments.UnsafeEnchantments
 import io.papermc.paper.persistence.PersistentDataContainerView
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
 
 @JvmInline
 value class ItemStackBuilder(internal val stack: ItemStack) {
@@ -25,17 +26,148 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
         get() = stack.maxStackSize
 
     var enchantments: MutableMap<Enchantment, Int>
-        get() = Enchantments(stack)
+        get() = object : MutableMap<Enchantment, Int> {
+            // region Enchantments
+            override val entries: MutableSet<MutableMap.MutableEntry<Enchantment, Int>>
+                get() = stack.enchantments.entries
+
+            override val keys: MutableSet<Enchantment>
+                get() = stack.enchantments.keys
+
+            override val size: Int
+                get() = stack.enchantments.size
+
+            override val values: MutableCollection<Int>
+                get() = stack.enchantments.values
+
+            override fun clear() = stack.removeEnchantments()
+
+            override fun isEmpty(): Boolean = stack.enchantments.isEmpty()
+
+            override fun remove(key: Enchantment): Int = stack.removeEnchantment(key)
+
+            override fun putAll(from: Map<out Enchantment, Int>) =
+                stack.addEnchantments(from.mapKeys { it as Enchantment })
+
+            override fun put(key: Enchantment, value: Int): Int? {
+                val previous = stack.getEnchantmentLevel(key)
+                stack.addEnchantment(key, value)
+                return if (previous == 0) null else previous
+            }
+
+            override fun get(key: Enchantment): Int = stack.getEnchantmentLevel(key)
+
+            override fun containsValue(value: Int): Boolean = throw UnsupportedOperationException("")
+
+            override fun containsKey(key: Enchantment): Boolean = stack.containsEnchantment(key)
+            // endregion
+        }
         set(value) {
+            enchantments.clear()
             enchantments.clear()
             enchantments.putAll(value)
         }
 
     var unsafeEnchantments: MutableMap<Enchantment, Int>
-        get() = UnsafeEnchantments(stack)
+        get() = object : MutableMap<Enchantment, Int> {
+            // region UnsafeEnchantments
+            override val entries: MutableSet<MutableMap.MutableEntry<Enchantment, Int>>
+                get() = stack.enchantments.entries
+
+            override val keys: MutableSet<Enchantment>
+                get() = stack.enchantments.keys
+
+            override val size: Int
+                get() = stack.enchantments.size
+
+            override val values: MutableCollection<Int>
+                get() = stack.enchantments.values
+
+            override fun clear() = stack.removeEnchantments()
+
+            override fun isEmpty(): Boolean = stack.enchantments.isEmpty()
+
+            override fun remove(key: Enchantment): Int = stack.removeEnchantment(key)
+
+            override fun putAll(from: Map<out Enchantment, Int>) =
+                stack.addUnsafeEnchantments(from.mapKeys { it as Enchantment })
+
+            override fun put(key: Enchantment, value: Int): Int? {
+                val previous = stack.getEnchantmentLevel(key)
+                stack.addUnsafeEnchantment(key, value)
+                return if (previous == 0) null else previous
+            }
+
+            override fun get(key: Enchantment): Int = stack.getEnchantmentLevel(key)
+
+            override fun containsValue(value: Int): Boolean = throw UnsupportedOperationException("")
+
+            override fun containsKey(key: Enchantment): Boolean = stack.containsEnchantment(key)
+            // endregion
+        }
         set(value) {
             unsafeEnchantments.clear()
             unsafeEnchantments.putAll(value)
+        }
+
+    var itemMeta: ItemMeta
+        get() = stack.itemMeta
+        set(value) {
+            stack.itemMeta = value
+        }
+
+    // TODO: Add ItemMeta builder support
+
+    val displayName: Component
+        get() = stack.displayName()
+
+    var lore: List<Component>
+        get() = stack.lore() ?: emptyList()
+        set(value) {
+            stack.lore(value)
+        }
+
+    val itemFlags: MutableSet<ItemFlag>
+        get() = object : MutableSet<ItemFlag> {
+            // region ItemFlags
+            override fun add(element: ItemFlag): Boolean {
+                stack.addItemFlags(element)
+                return true
+            }
+
+            override val size: Int
+                get() = stack.itemFlags.size
+
+            override fun clear() = stack.removeItemFlags(*stack.itemFlags.toTypedArray())
+
+            override fun isEmpty(): Boolean = stack.itemFlags.isEmpty()
+
+            override fun iterator(): MutableIterator<ItemFlag> = stack.itemFlags.iterator()
+
+            override fun retainAll(elements: Collection<ItemFlag>): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun removeAll(elements: Collection<ItemFlag>): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun remove(element: ItemFlag): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun containsAll(elements: Collection<ItemFlag>): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun contains(element: ItemFlag): Boolean {
+                TODO("Not yet implemented")
+            }
+
+            override fun addAll(elements: Collection<ItemFlag>): Boolean {
+                TODO("Not yet implemented")
+            }
+            // endregion
         }
 }
 
