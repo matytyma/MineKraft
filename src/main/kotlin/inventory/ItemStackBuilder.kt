@@ -123,9 +123,7 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
 
     var lore: List<Component>
         get() = stack.lore() ?: emptyList()
-        set(value) {
-            stack.lore(value)
-        }
+        set(value) = stack.lore(value)
 
     val itemFlags: MutableSet<ItemFlag>
         get() = object : MutableSet<ItemFlag> {
