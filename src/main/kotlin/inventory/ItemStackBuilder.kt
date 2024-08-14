@@ -116,8 +116,6 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             stack.itemMeta = value
         }
 
-    // TODO: Add ItemMeta builder support
-
     val displayName: Component
         get() = stack.displayName()
 
