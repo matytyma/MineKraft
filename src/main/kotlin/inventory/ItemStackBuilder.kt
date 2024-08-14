@@ -184,8 +184,10 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             // endregion
         }
         set(value) {
-            itemFlags.clear()
-            itemFlags.addAll(value)
+            val removed = stack.itemFlags.filter { it !in value }
+            val added = value.filter { it !in stack.itemFlags }
+            stack.removeItemFlags(*removed.toTypedArray())
+            stack.addItemFlags(*added.toTypedArray())
         }
 
     val translationKey: String
