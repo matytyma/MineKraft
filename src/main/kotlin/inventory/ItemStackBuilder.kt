@@ -64,7 +64,6 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
         }
         set(value) {
             enchantments.clear()
-            enchantments.clear()
             enchantments.putAll(value)
         }
 
