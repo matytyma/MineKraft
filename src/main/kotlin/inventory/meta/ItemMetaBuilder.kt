@@ -5,8 +5,8 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.enchantments.Enchantment
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.meta.ItemMeta
-import sun.jvm.hotspot.oops.CellTypeState.value
 
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
@@ -116,6 +116,78 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
         set(value) {
             enchantments.clear()
             enchantments.putAll(value)
+        }
+
+    var itemFlags: MutableSet<ItemFlag>
+        get() = object : MutableSet<ItemFlag> {
+            // region ItemFlags
+            override fun add(element: ItemFlag): Boolean {
+                val hasItemFlag = meta.hasItemFlag(element)
+                if (!hasItemFlag) {
+                    meta.addItemFlags(element)
+                }
+                return !hasItemFlag
+            }
+
+            override val size: Int
+                get() = meta.itemFlags.size
+
+            override fun clear() = meta.removeItemFlags(*meta.itemFlags.toTypedArray())
+
+            override fun isEmpty(): Boolean = meta.itemFlags.isEmpty()
+
+            override fun iterator(): MutableIterator<ItemFlag> = meta.itemFlags.iterator()
+
+            override fun retainAll(elements: Collection<ItemFlag>): Boolean {
+                val forRemoval = meta.itemFlags.filter { it !in elements }
+                meta.removeItemFlags(*forRemoval.toTypedArray())
+                return forRemoval.isNotEmpty()
+            }
+
+            override fun removeAll(elements: Collection<ItemFlag>): Boolean {
+                var removed = false
+                elements.forEach { removed = removed || remove(it) }
+                return removed
+            }
+
+            override fun remove(element: ItemFlag): Boolean {
+                val removed = meta.hasItemFlag(element)
+                meta.removeItemFlags(element)
+                return removed
+            }
+
+            override fun containsAll(elements: Collection<ItemFlag>): Boolean {
+                var contains = true
+                elements.forEach { contains = contains && contains(it) }
+                return contains
+            }
+
+            override fun contains(element: ItemFlag): Boolean = meta.hasItemFlag(element)
+
+            override fun addAll(elements: Collection<ItemFlag>): Boolean {
+                var added = false
+                elements.forEach { added = added || add(it) }
+                return added
+            }
+            // endregion
+        }
+        set(value) {
+            val removed = meta.itemFlags.filter { it !in value }
+            val added = value.filter { it !in meta.itemFlags }
+            meta.removeItemFlags(*removed.toTypedArray())
+            meta.addItemFlags(*added.toTypedArray())
+        }
+
+    var hideTooltip: Boolean
+        get() = meta.isHideTooltip
+        set(value) {
+            meta.isHideTooltip = value
+        }
+
+    var unbreakable: Boolean
+        get() = meta.isUnbreakable
+        set(value) {
+            meta.isUnbreakable = value
         }
 }
 
