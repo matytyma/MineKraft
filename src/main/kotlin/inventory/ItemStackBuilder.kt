@@ -130,7 +130,7 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
         get() = stack.lore() ?: emptyList()
         set(value) = stack.lore(value)
 
-    val itemFlags: MutableSet<ItemFlag>
+    var itemFlags: MutableSet<ItemFlag>
         get() = object : MutableSet<ItemFlag> {
             // region ItemFlags
             override fun add(element: ItemFlag): Boolean {
@@ -150,7 +150,7 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             override fun retainAll(elements: Collection<ItemFlag>): Boolean {
                 val flags = stack.itemFlags.toMutableSet()
                 val result = flags.retainAll(elements.toSet())
-                stack.removeItemFlags(*stack.itemFlags.toTypedArray())
+                clear()
                 stack.addItemFlags(*flags.toTypedArray())
                 return result
             }
@@ -180,7 +180,10 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             }
             // endregion
         }
-
+        set(value) {
+            itemFlags.clear()
+            itemFlags.addAll(value)
+        }
     val translationKey: String
         get() = stack.translationKey()
 }
