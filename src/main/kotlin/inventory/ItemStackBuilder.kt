@@ -156,19 +156,31 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
                 return forRemoval.isNotEmpty()
             }
 
-            override fun removeAll(elements: Collection<ItemFlag>): Boolean = elements.any(::remove)
-
-            override fun remove(element: ItemFlag): Boolean {
-                val result = stack.hasItemFlag(element)
-                stack.removeItemFlags(element)
-                return result
+            override fun removeAll(elements: Collection<ItemFlag>): Boolean {
+                var removed = false
+                elements.forEach { removed = removed || remove(it) }
+                return removed
             }
 
-            override fun containsAll(elements: Collection<ItemFlag>): Boolean = elements.all { stack.hasItemFlag(it) }
+            override fun remove(element: ItemFlag): Boolean {
+                val removed = stack.hasItemFlag(element)
+                stack.removeItemFlags(element)
+                return removed
+            }
+
+            override fun containsAll(elements: Collection<ItemFlag>): Boolean {
+                var contains = true
+                elements.forEach { contains = contains && stack.hasItemFlag(it) }
+                return contains
+            }
 
             override fun contains(element: ItemFlag): Boolean = stack.hasItemFlag(element)
 
-            override fun addAll(elements: Collection<ItemFlag>): Boolean = elements.any(::add)
+            override fun addAll(elements: Collection<ItemFlag>): Boolean {
+                var added = false
+                elements.forEach { added = added || add(it) }
+                return added
+            }
             // endregion
         }
         set(value) {
