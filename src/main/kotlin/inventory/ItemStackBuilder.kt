@@ -44,10 +44,14 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
 
             override fun isEmpty(): Boolean = stack.enchantments.isEmpty()
 
-            override fun remove(key: Enchantment): Int = stack.removeEnchantment(key)
+            override fun remove(key: Enchantment): Int? {
+                val previous = stack.getEnchantmentLevel(key)
+                stack.removeEnchantment(key)
+                return if(previous == 0) null else previous
+            }
 
             override fun putAll(from: Map<out Enchantment, Int>) =
-                stack.addEnchantments(from.mapKeys { it as Enchantment })
+                from.forEach { stack.addEnchantment(it.key, it.value) }
 
             override fun put(key: Enchantment, value: Int): Int? {
                 val previous = stack.getEnchantmentLevel(key)
@@ -55,12 +59,12 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
                 return if (previous == 0) null else previous
             }
 
-            override fun get(key: Enchantment): Int = stack.getEnchantmentLevel(key)
+            override fun get(key: Enchantment): Int? = stack.getEnchantmentLevel(key).let { if (it == 0) null else it }
 
             override fun containsValue(value: Int): Boolean = throw UnsupportedOperationException("")
 
             override fun containsKey(key: Enchantment): Boolean = stack.containsEnchantment(key)
-            // endregion
+            // endregion+
         }
         set(value) {
             enchantments.clear()
@@ -86,10 +90,14 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
 
             override fun isEmpty(): Boolean = stack.enchantments.isEmpty()
 
-            override fun remove(key: Enchantment): Int = stack.removeEnchantment(key)
+            override fun remove(key: Enchantment): Int? {
+                val previous = stack.getEnchantmentLevel(key)
+                stack.removeEnchantment(key)
+                return if(previous == 0) null else previous
+            }
 
             override fun putAll(from: Map<out Enchantment, Int>) =
-                stack.addUnsafeEnchantments(from.mapKeys { it as Enchantment })
+                from.forEach { stack.addUnsafeEnchantment(it.key, it.value) }
 
             override fun put(key: Enchantment, value: Int): Int? {
                 val previous = stack.getEnchantmentLevel(key)
@@ -97,7 +105,7 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
                 return if (previous == 0) null else previous
             }
 
-            override fun get(key: Enchantment): Int = stack.getEnchantmentLevel(key)
+            override fun get(key: Enchantment): Int? = stack.getEnchantmentLevel(key).let { if (it == 0) null else it }
 
             override fun containsValue(value: Int): Boolean = throw UnsupportedOperationException("")
 
