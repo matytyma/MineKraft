@@ -1,12 +1,19 @@
 package dev.matytyma.minekraft.inventory.meta
 
+import com.google.common.collect.Multimap
 import dev.matytyma.minekraft.inventory.ItemStackBuilder
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.attribute.Attribute
+import org.bukkit.attribute.AttributeModifier
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.inventory.ItemFlag
+import org.bukkit.inventory.ItemRarity
 import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.inventory.meta.components.*
+import org.jetbrains.annotations.ApiStatus
+import sun.jvm.hotspot.oops.CellTypeState.value
 
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
@@ -178,16 +185,52 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
             meta.addItemFlags(*added.toTypedArray())
         }
 
-    var hideTooltip: Boolean
-        get() = meta.isHideTooltip
+    var isTooltipShown: Boolean
+        get() = !meta.isHideTooltip
         set(value) {
-            meta.isHideTooltip = value
+            meta.isHideTooltip = !value
         }
 
-    var unbreakable: Boolean
+    var isUnbreakable: Boolean
         get() = meta.isUnbreakable
         set(value) {
             meta.isUnbreakable = value
+        }
+
+    var enchantmentGlintOverride: Boolean?
+        get() = if (meta.hasEnchantmentGlintOverride()) meta.enchantmentGlintOverride else null
+        set(value) = meta.setEnchantmentGlintOverride(value)
+
+    var fireResistant: Boolean
+        get() = meta.isFireResistant
+        set(value) {
+            meta.isFireResistant = value
+        }
+
+    var maxStackSize: Int?
+        get() = if (meta.hasMaxStackSize()) meta.maxStackSize else null
+        set(value) = meta.setMaxStackSize(value)
+
+    var rarity: ItemRarity?
+        get() = if (meta.hasRarity()) meta.rarity else null
+        set(value) = meta.setRarity(value)
+
+    // TODO: Create annotation for experimental stuff
+    var food: FoodComponent?
+        get() = if (meta.hasFood()) meta.food else null
+        set(value) = meta.setFood(value)
+
+    var tool: ToolComponent?
+        get() = if (meta.hasTool()) meta.tool else null
+        set(value) = meta.setTool(value)
+
+    var jukeboxPlayable: JukeboxPlayableComponent?
+        get() = if (meta.hasJukeboxPlayable()) meta.jukeboxPlayable else null
+        set(value) = meta.setJukeboxPlayable(value)
+
+    var attributeModifiers: Multimap<Attribute, AttributeModifier>
+        get() = object : Multimap<Attribute, AttributeModifier> {
+
         }
 }
 
