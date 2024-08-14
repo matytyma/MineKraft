@@ -177,6 +177,9 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             }
             // endregion
         }
+
+        val translationKey: String
+            get() = stack.translationKey()
 }
 
 fun itemStack(
