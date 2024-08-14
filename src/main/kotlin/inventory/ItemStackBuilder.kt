@@ -47,7 +47,7 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             override fun remove(key: Enchantment): Int? {
                 val previous = stack.getEnchantmentLevel(key)
                 stack.removeEnchantment(key)
-                return if(previous == 0) null else previous
+                return if (previous == 0) null else previous
             }
 
             override fun putAll(from: Map<out Enchantment, Int>) =
@@ -93,7 +93,7 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             override fun remove(key: Enchantment): Int? {
                 val previous = stack.getEnchantmentLevel(key)
                 stack.removeEnchantment(key)
-                return if(previous == 0) null else previous
+                return if (previous == 0) null else previous
             }
 
             override fun putAll(from: Map<out Enchantment, Int>) =
@@ -181,8 +181,8 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             // endregion
         }
 
-        val translationKey: String
-            get() = stack.translationKey()
+    val translationKey: String
+        get() = stack.translationKey()
 }
 
 fun itemStack(
