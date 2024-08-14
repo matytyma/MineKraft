@@ -134,8 +134,11 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
         get() = object : MutableSet<ItemFlag> {
             // region ItemFlags
             override fun add(element: ItemFlag): Boolean {
-                stack.addItemFlags(element)
-                return true
+                val hasItemFlag = stack.hasItemFlag(element)
+                if (!hasItemFlag) {
+                    stack.addItemFlags(element)
+                }
+                return hasItemFlag
             }
 
             override val size: Int
@@ -148,20 +151,12 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
             override fun iterator(): MutableIterator<ItemFlag> = stack.itemFlags.iterator()
 
             override fun retainAll(elements: Collection<ItemFlag>): Boolean {
-                val flags = stack.itemFlags.toMutableSet()
-                val result = flags.retainAll(elements.toSet())
-                clear()
-                stack.addItemFlags(*flags.toTypedArray())
-                return result
+                val forRemoval = stack.itemFlags.filter { it !in elements }
+                stack.removeItemFlags(*forRemoval.toTypedArray())
+                return forRemoval.isNotEmpty()
             }
 
-            override fun removeAll(elements: Collection<ItemFlag>): Boolean {
-                val flags = stack.itemFlags.toMutableSet()
-                val result = flags.removeAll(elements.toSet())
-                stack.removeItemFlags(*stack.itemFlags.toTypedArray())
-                stack.addItemFlags(*flags.toTypedArray())
-                return result
-            }
+            override fun removeAll(elements: Collection<ItemFlag>): Boolean = elements.any(::remove)
 
             override fun remove(element: ItemFlag): Boolean {
                 val result = stack.hasItemFlag(element)
@@ -169,21 +164,18 @@ value class ItemStackBuilder(internal val stack: ItemStack) {
                 return result
             }
 
-            override fun containsAll(elements: Collection<ItemFlag>): Boolean = stack.itemFlags.containsAll(elements)
+            override fun containsAll(elements: Collection<ItemFlag>): Boolean = elements.all { stack.hasItemFlag(it) }
 
-            override fun contains(element: ItemFlag): Boolean = stack.itemFlags.contains(element)
+            override fun contains(element: ItemFlag): Boolean = stack.hasItemFlag(element)
 
-            override fun addAll(elements: Collection<ItemFlag>): Boolean {
-                val previous = stack.itemFlags
-                stack.addItemFlags(*elements.toTypedArray())
-                return previous != stack.itemFlags
-            }
+            override fun addAll(elements: Collection<ItemFlag>): Boolean = elements.any(::add)
             // endregion
         }
         set(value) {
             itemFlags.clear()
             itemFlags.addAll(value)
         }
+
     val translationKey: String
         get() = stack.translationKey()
 }
