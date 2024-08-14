@@ -71,6 +71,52 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
             enchantments.clear()
             enchantments.putAll(value)
         }
+
+    var unsafeEnchantments: MutableMap<Enchantment, Int>
+        get() = object : MutableMap<Enchantment, Int> {
+            // region UnsafeEnchantments
+            override val entries: MutableSet<MutableMap.MutableEntry<Enchantment, Int>>
+                get() = meta.enchants.entries
+
+            override val keys: MutableSet<Enchantment>
+                get() = meta.enchants.keys
+
+            override val size: Int
+                get() = meta.enchants.size
+
+            override val values: MutableCollection<Int>
+                get() = meta.enchants.values
+
+            override fun clear() = meta.removeEnchantments()
+
+            override fun isEmpty(): Boolean = meta.hasEnchants()
+
+            override fun remove(key: Enchantment): Int? {
+                val previous = meta.getEnchantLevel(key)
+                meta.removeEnchant(key)
+                return if (previous == 0) null else previous
+            }
+
+            override fun putAll(from: Map<out Enchantment, Int>) =
+                from.forEach { meta.addEnchant(it.key, it.value, true) }
+
+            override fun put(key: Enchantment, value: Int): Int? {
+                val previous = meta.getEnchantLevel(key)
+                meta.addEnchant(key, value, true)
+                return if (previous == 0) null else previous
+            }
+
+            override fun get(key: Enchantment): Int? = meta.getEnchantLevel(key).let { if (it == 0) null else it }
+
+            override fun containsValue(value: Int): Boolean = throw UnsupportedOperationException("")
+
+            override fun containsKey(key: Enchantment): Boolean = meta.hasEnchant(key)
+            // endregion
+        }
+        set(value) {
+            enchantments.clear()
+            enchantments.putAll(value)
+        }
 }
 
 fun itemMeta(
