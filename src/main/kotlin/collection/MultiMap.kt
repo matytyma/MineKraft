@@ -1,10 +1,12 @@
 package dev.matytyma.minekraft.collection
 
-interface MutableMultiMap<K, V> {
+interface MultiMap<K, V> {
     fun isEmpty(): Boolean
 
     operator fun get(key: K): List<V>?
+}
 
+interface MutableMultiMap<K, V> : MultiMap<K, V> {
     operator fun set(key: K, value: V)
 
     operator fun set(key: K, values: Collection<V>)
