@@ -1,7 +1,5 @@
 package dev.matytyma.minekraft.inventory.meta
 
-import com.google.common.collect.Multimap
-import com.google.common.collect.Multiset
 import dev.matytyma.minekraft.annotation.ExperimentalComponentApi
 import dev.matytyma.minekraft.inventory.ItemStackBuilder
 import net.kyori.adventure.text.Component
@@ -15,6 +13,7 @@ import org.bukkit.inventory.ItemRarity
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.components.*
 
+@Suppress("UnstableApiUsage")
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
     var displayName: Component?
@@ -230,87 +229,13 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
         get() = if (meta.hasJukeboxPlayable()) meta.jukeboxPlayable else null
         set(value) = meta.setJukeboxPlayable(value)
 
-    var attributeModifiers: Multimap<Attribute, AttributeModifier>
-        get() = object : Multimap<Attribute, AttributeModifier> {
-            override fun size(): Int {
-                TODO("Not yet implemented")
-            }
+    @JvmInline
+    value class AttributeModifiers(private val meta: ItemMeta) {
 
-            override fun isEmpty(): Boolean {
-                TODO("Not yet implemented")
-            }
+    }
 
-            override fun containsKey(key: Any?): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun containsValue(value: Any?): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun containsEntry(key: Any?, value: Any?): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun remove(key: Any?, value: Any?): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun removeAll(key: Any?): MutableCollection<AttributeModifier> {
-                TODO("Not yet implemented")
-            }
-
-            override fun clear() {
-                TODO("Not yet implemented")
-            }
-
-            override fun keySet(): MutableSet<Attribute> {
-                TODO("Not yet implemented")
-            }
-
-            override fun keys(): Multiset<Attribute> {
-                TODO("Not yet implemented")
-            }
-
-            override fun values(): MutableCollection<AttributeModifier> {
-                TODO("Not yet implemented")
-            }
-
-            override fun entries(): MutableCollection<MutableMap.MutableEntry<Attribute, AttributeModifier>> {
-                TODO("Not yet implemented")
-            }
-
-            override fun asMap(): MutableMap<Attribute, MutableCollection<AttributeModifier>> {
-                TODO("Not yet implemented")
-            }
-
-            override fun get(key: Attribute?): MutableCollection<AttributeModifier> {
-                TODO("Not yet implemented")
-            }
-
-            override fun replaceValues(
-                key: Attribute?,
-                values: MutableIterable<AttributeModifier>,
-            ): MutableCollection<AttributeModifier> {
-                TODO("Not yet implemented")
-            }
-
-            override fun putAll(multimap: Multimap<out Attribute, out AttributeModifier>): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun putAll(key: Attribute?, values: MutableIterable<AttributeModifier>): Boolean {
-                TODO("Not yet implemented")
-            }
-
-            override fun put(key: Attribute?, value: AttributeModifier?): Boolean {
-                TODO("Not yet implemented")
-            }
-        }
-        set(value) {
-            attributeModifiers.clear()
-            attributeModifiers.putAll(value)
-        }
+    val attributeModifiers: AttributeModifiers
+        get() = AttributeModifiers(meta)
 }
 
 fun itemMeta(
