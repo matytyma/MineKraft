@@ -4,6 +4,8 @@ interface MultiMap<K, V> {
     fun isEmpty(): Boolean
 
     operator fun get(key: K): List<V>?
+
+    fun toJavaMultiMap(): com.google.common.collect.Multimap<K, V>
 }
 
 interface MutableMultiMap<K, V> : MultiMap<K, V> {
