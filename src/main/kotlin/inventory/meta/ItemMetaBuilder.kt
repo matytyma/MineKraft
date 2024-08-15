@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemRarity
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.components.*
 
-@Suppress("UnstableApiUsage")
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
     var displayName: Component?
@@ -215,16 +214,19 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
         set(value) = meta.setRarity(value)
 
     @ExperimentalComponentApi
+    @Suppress("UnstableApiUsage")
     var food: FoodComponent?
         get() = if (meta.hasFood()) meta.food else null
         set(value) = meta.setFood(value)
 
     @ExperimentalComponentApi
+    @Suppress("UnstableApiUsage")
     var tool: ToolComponent?
         get() = if (meta.hasTool()) meta.tool else null
         set(value) = meta.setTool(value)
 
     @ExperimentalComponentApi
+    @Suppress("UnstableApiUsage")
     var jukeboxPlayable: JukeboxPlayableComponent?
         get() = if (meta.hasJukeboxPlayable()) meta.jukeboxPlayable else null
         set(value) = meta.setJukeboxPlayable(value)
