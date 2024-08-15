@@ -1,6 +1,7 @@
 package dev.matytyma.minekraft.inventory.meta
 
 import com.google.common.collect.Multimap
+import dev.matytyma.minekraft.annotation.ExperimentalComponentApi
 import dev.matytyma.minekraft.inventory.ItemStackBuilder
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -12,8 +13,6 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemRarity
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.components.*
-import org.jetbrains.annotations.ApiStatus
-import sun.jvm.hotspot.oops.CellTypeState.value
 
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
@@ -215,15 +214,17 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
         get() = if (meta.hasRarity()) meta.rarity else null
         set(value) = meta.setRarity(value)
 
-    // TODO: Create annotation for experimental stuff
+    @ExperimentalComponentApi
     var food: FoodComponent?
         get() = if (meta.hasFood()) meta.food else null
         set(value) = meta.setFood(value)
 
+    @ExperimentalComponentApi
     var tool: ToolComponent?
         get() = if (meta.hasTool()) meta.tool else null
         set(value) = meta.setTool(value)
 
+    @ExperimentalComponentApi
     var jukeboxPlayable: JukeboxPlayableComponent?
         get() = if (meta.hasJukeboxPlayable()) meta.jukeboxPlayable else null
         set(value) = meta.setJukeboxPlayable(value)
