@@ -1,6 +1,7 @@
 package dev.matytyma.minekraft.inventory.meta
 
 import com.google.common.collect.HashMultimap
+import com.google.common.collect.Multimap
 import dev.matytyma.minekraft.annotation.ExperimentalComponentApi
 import dev.matytyma.minekraft.collection.MutableMultiMap
 import dev.matytyma.minekraft.inventory.ItemStackBuilder
@@ -260,8 +261,11 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
             }
 
             override fun get(key: Attribute): List<AttributeModifier>? = meta.getAttributeModifiers(key)?.toList()
+
+            override fun toJavaMultiMap(): Multimap<Attribute, AttributeModifier> = meta.attributeModifiers ?: HashMultimap.create()
         }
         set(value) {
+            meta.attributeModifiers = value.toJavaMultiMap()
         }
 }
 
