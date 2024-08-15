@@ -1,6 +1,8 @@
 package dev.matytyma.minekraft.inventory.meta
 
+import com.google.common.collect.HashMultimap
 import dev.matytyma.minekraft.annotation.ExperimentalComponentApi
+import dev.matytyma.minekraft.collection.MutableMultiMap
 import dev.matytyma.minekraft.inventory.ItemStackBuilder
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
@@ -12,6 +14,7 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemRarity
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.components.*
+import org.checkerframework.checker.units.qual.K
 
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
@@ -231,13 +234,35 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
         get() = if (meta.hasJukeboxPlayable()) meta.jukeboxPlayable else null
         set(value) = meta.setJukeboxPlayable(value)
 
-    @JvmInline
-    value class AttributeModifiers(private val meta: ItemMeta) {
 
-    }
+    var attributeModifiers: MutableMultiMap<Attribute, AttributeModifier>
+        get() = object : MutableMultiMap<Attribute, AttributeModifier> {
+            override fun isEmpty(): Boolean = !meta.hasAttributeModifiers()
 
-    val attributeModifiers: AttributeModifiers
-        get() = AttributeModifiers(meta)
+            override fun remove(key: Attribute): Boolean = meta.removeAttributeModifier(key)
+
+            override fun addAll(from: Map<out Attribute, Collection<AttributeModifier>>): Boolean =
+                from.map { add(it.key, it.value) }.any { it }
+
+            override fun add(key: Attribute, values: Collection<AttributeModifier>): Boolean =
+                values.map { add(key, it) }.any { it }
+
+            override fun add(key: Attribute, value: AttributeModifier): Boolean = meta.addAttributeModifier(key, value)
+
+            override fun putAll(from: Map<out Attribute, Collection<AttributeModifier>>) =
+                from.forEach { set(it.key, it.value) }
+
+            override fun set(key: Attribute, values: Collection<AttributeModifier>) = values.forEach { set(key, it) }
+
+            override fun set(key: Attribute, value: AttributeModifier) {
+                meta.removeAttributeModifier(key)
+                meta.addAttributeModifier(key, value)
+            }
+
+            override fun get(key: Attribute): List<AttributeModifier>? = meta.getAttributeModifiers(key)?.toList()
+        }
+        set(value) {
+        }
 }
 
 fun itemMeta(
