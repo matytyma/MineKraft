@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemRarity
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.inventory.meta.components.*
-import org.checkerframework.checker.units.qual.K
 
 @JvmInline
 value class ItemMetaBuilder(internal val meta: ItemMeta) {
@@ -238,6 +237,7 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
 
     var attributeModifiers: MutableMultiMap<Attribute, AttributeModifier>
         get() = object : MutableMultiMap<Attribute, AttributeModifier> {
+            // region AttributeModifiers
             override fun isEmpty(): Boolean = !meta.hasAttributeModifiers()
 
             override fun remove(key: Attribute): Boolean = meta.removeAttributeModifier(key)
@@ -263,6 +263,7 @@ value class ItemMetaBuilder(internal val meta: ItemMeta) {
             override fun get(key: Attribute): List<AttributeModifier>? = meta.getAttributeModifiers(key)?.toList()
 
             override fun toJavaMultiMap(): Multimap<Attribute, AttributeModifier> = meta.attributeModifiers ?: HashMultimap.create()
+            // endregion
         }
         set(value) {
             meta.attributeModifiers = value.toJavaMultiMap()
