@@ -90,11 +90,18 @@ value class LocationBuilder(internal val location: Location) {
         location.subtract(vector.first, vector.second, vector.third)
     }
 
+    operator fun timesAssign(multiplier: Double) {
+        location.multiply(multiplier)
+    }
+
     val length: Double
         get() = location.length()
 
     val lengthSquared: Double
         get() = location.lengthSquared()
+
+    val isFinite: Boolean
+        get() = location.isFinite
 }
 
 fun location(
