@@ -2,6 +2,7 @@ package dev.matytyma.minekraft
 
 import org.bukkit.*
 import org.bukkit.block.Block
+import org.bukkit.util.Vector
 
 @JvmInline
 value class LocationBuilder(internal val location: Location) {
@@ -49,6 +50,51 @@ value class LocationBuilder(internal val location: Location) {
 
     val block: Block
         get() = location.block
+
+    val blockX: Int
+        get() = location.blockX
+
+    val blockY: Int
+        get() = location.blockY
+
+    val blockZ: Int
+        get() = location.blockZ
+
+    var direction: Vector
+        get() = location.direction
+        set(value) {
+            location.direction = value
+        }
+
+    operator fun plusAssign(other: Location) {
+        location.add(other)
+    }
+
+    operator fun plusAssign(vector: Vector) {
+        location.add(vector)
+    }
+
+    operator fun plusAssign(vector: Triple<Double, Double, Double>) {
+        location.add(vector.first, vector.second, vector.third)
+    }
+
+    operator fun minusAssign(other: Location) {
+        location.subtract(other)
+    }
+
+    operator fun minusAssign(vector: Vector) {
+        location.subtract(vector)
+    }
+
+    operator fun minusAssign(vector: Triple<Double, Double, Double>) {
+        location.subtract(vector.first, vector.second, vector.third)
+    }
+
+    val length: Double
+        get() = location.length()
+
+    val lengthSquared: Double
+        get() = location.lengthSquared()
 }
 
 fun location(
