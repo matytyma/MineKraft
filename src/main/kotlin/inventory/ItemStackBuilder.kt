@@ -10,21 +10,40 @@ import org.bukkit.inventory.meta.ItemMeta
 
 @JvmInline
 value class ItemStackBuilder(internal val stack: ItemStack) {
+    /**
+     * View of this stack's persistent data container
+     */
     val persistentDataContainer: PersistentDataContainerView
         get() = stack.persistentDataContainer
 
+    /**
+     * Material of this stack
+     */
     val type: Material
         get() = stack.type
 
+    /**
+     * Amount of items in this stack
+     */
     var amount: Int
         get() = stack.amount
         set(value) {
             stack.amount = value
         }
 
+    /**
+     * Maximum size of this stack
+     *
+     * If this item has a max stack size component ([ItemMeta.hasMaxStackSize]),
+     * its value will be returned. Otherwise [default value][Material.getMaxStackSize]
+     * wil be returned.
+     */
     val maxStackSize: Int
         get() = stack.maxStackSize
 
+    /**
+     * Enchantments of this stack
+     */
     var enchantments: MutableMap<Enchantment, Int>
         get() = object : MutableMap<Enchantment, Int> {
             // region Enchantments
