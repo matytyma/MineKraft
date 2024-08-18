@@ -19,7 +19,7 @@ interface MutableMultiMap<K, V> : MultiMap<K, V> {
 
     fun add(key: K, values: Collection<V>): Boolean
 
-    fun addAll(from  : Map<out K, Collection<V>>): Boolean
+    fun addAll(from: Map<out K, Collection<V>>): Boolean
 
     fun remove(key: K): Boolean
 
@@ -32,4 +32,9 @@ interface MutableMultiMap<K, V> : MultiMap<K, V> {
     }
 
     operator fun minusAssign(keys: Collection<K>) = keys.forEach { remove(it) }
+}
+
+@JvmName("plusAssignSingle")
+operator fun <K, V> MutableMultiMap<K, V>.plusAssign(pair: Pair<K, V>) {
+    add(pair.first, pair.second)
 }
