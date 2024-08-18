@@ -23,10 +23,6 @@ interface MutableMultiMap<K, V> : MultiMap<K, V> {
 
     fun remove(key: K): Boolean
 
-    operator fun plusAssign(pair: Pair<K, V>)  {
-        add(pair.first, pair.second)
-    }
-
     operator fun plusAssign(pair: Pair<K, Collection<V>>) {
         add(pair.first, pair.second)
     }
