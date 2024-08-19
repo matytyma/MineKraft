@@ -20,3 +20,12 @@ dependencies {
 kotlin {
     jvmToolchain(21)
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("MineKraft") {
+            from(components["java"])
+            artifactId = "minekraft-api"
+        }
+    }
+}
