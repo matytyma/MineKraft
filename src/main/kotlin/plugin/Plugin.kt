@@ -5,9 +5,15 @@ import org.bukkit.plugin.Plugin
 
 inline fun <reified T : Event> Plugin.on(
     priority: EventPriority = EventPriority.NORMAL,
-    noinline handler: T.() -> Unit
+    noinline handler: T.() -> Unit,
+) = on(T::class.java, priority, handler)
+
+inline fun <reified T : Event> Plugin.on(
+    eventClass: Class<out T>,
+    priority: EventPriority = EventPriority.NORMAL,
+    noinline handler: T.() -> Unit,
 ) {
     val listener: Listener = object : Listener {}
     val executor: (Listener, Event) -> Unit = { _, event -> (event as T).handler() }
-    server.pluginManager.registerEvent(T::class.java, listener, priority, executor, this)
+    server.pluginManager.registerEvent(eventClass, listener, priority, executor, this)
 }
