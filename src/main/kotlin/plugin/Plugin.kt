@@ -7,15 +7,18 @@ inline fun <reified T : Event> Plugin.on(
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
     noinline handler: T.() -> Unit,
-) = on(T::class.java, priority, ignoreCancelled, handler)
+): Listener = on(T::class.java, priority, ignoreCancelled, handler)
 
-inline fun <reified T : Event> Plugin.on(
+fun <T : Event> Plugin.on(
     eventClass: Class<out T>,
     priority: EventPriority = EventPriority.NORMAL,
     ignoreCancelled: Boolean = false,
-    noinline handler: T.() -> Unit,
-) {
+    handler: T.() -> Unit,
+): Listener {
     val listener: Listener = object : Listener {}
-    val executor: (Listener, Event) -> Unit = { _, event -> (event as T).handler() }
+    val executor: (Listener, Event) -> Unit = { _, event ->
+        runCatching { eventClass.cast(event) }.getOrNull()?.handler()
+    }
     server.pluginManager.registerEvent(eventClass, listener, priority, executor, this, ignoreCancelled)
+    return listener
 }
