@@ -42,3 +42,7 @@ dependencies {
     <version>{version}</version>
 </dependency>
 ```
+
+## Screenshots
+![](https://github.com/user-attachments/assets/dfb01a8d-9718-4b43-b20b-7f3b4e54c2d5)
+![](https://github.com/user-attachments/assets/b4215954-94dd-4b83-be12-24f739c89ca3)
